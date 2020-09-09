@@ -1,11 +1,3 @@
-/*
- * @Author: your name
- * @Date: 2020-09-09 17:44:14
- * @LastEditTime: 2020-09-09 19:09:13
- * @LastEditors: your name
- * @Description: In User Settings Edit
- * @FilePath: \learn-js\javascript设计模式\design-pattern-test\src\15.观察者模式.js
- */
 // 主题， 保存状态， 状态变化之后触发所有观察这对象
 class Subject {
   constructor(){

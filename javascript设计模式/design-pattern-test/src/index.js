@@ -1,16 +1,27 @@
-// stream 用到自定义事件
-const fs = require("fs");
-const readline = require("readline");
-const rl = readline.createInterface({
-    input:fs.createReadStream("./file.text")
+import StateMachine from "javascript-state-machine";
+import $ from "jquery";
+
+let fsm = new StateMachine({
+    init:"pending",
+    transitions:[
+        {
+            name:"resolve", // 事件名称
+            from:"pending",
+            to:"fullfilled"
+        },
+        {
+            name:"reject",
+            from:"pending",
+            to:"rejected"
+        }
+    ],
+    methods:{
+        onResolve:function(state,data){ // state 当前状态机实例  data参数
+            
+        },
+        onReject:function(){
+           
+        }
+    }
 });
 
-let lineNum = 0;
-
-rl.on("line",function(line){
-    lineNum++;
-});
-
-rl.on("close",function(){
-    console.log("lineNum",lineNum);
-});

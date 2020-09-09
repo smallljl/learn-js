@@ -14,7 +14,7 @@ simon.on("bark",function(){
 
 simon.on("bark",function(){
     console.log(this.name, " barked_1");
-});
+}); 
 
 setInterval(function(){
     simon.emit("bark");
