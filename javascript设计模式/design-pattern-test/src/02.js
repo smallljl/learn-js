@@ -48,7 +48,7 @@ class Park {
       const place = info.place;
       place.out();
       this.screen.show(car,info.inTime);
-      //清空记录
+      //清空记录 
       delete this.carList[car.num];
   }
   emtpyNum(){
