@@ -1,56 +1,38 @@
-// 状态备忘
-class Memento {
-    constructor(content){
-        this.content = content;
+class Mediator {
+    constructor(a,b){
+        this.a = a;
+        this.b = b;
     }
-    getContent(){
-        return this.content;
+    setB(){
+        let num = this.a.number;
+        this.b.setNumber(num * 100);
+    }
+    setA(){
+        let num = this.b.number;
+        this.a.setNumber(num / 100); 
     }
 }
 
-// 备忘列表
-class CareTaker {
+class A {
     constructor(){
-        this.list = [];
+        this.number = 0;
     }
-    add(memento){
-        this.list.push(memento);
-    }
-    get(index){
-        return this.list[index];
+    setNumber(num,m){
+        this.number = num;
+        if(m){
+            m.setB();
+        }
     }
 }
 
-// 编辑器
-class Editor {
+class N {
     constructor(){
-        this.content = null;
+        this.number = 0;
     }
-    setContent(content){
-        this.content = content;
-    }
-    getContent(){
-        return this.content;
-    }
-    saveContentToMemento(){
-        return new Memento(this.content);
-    }
-    getContentFromMemento(memento){
-        this.content = memento.getContent();
+    setNumber(num,m){
+        this.number = num;
+        if(m){
+            m.setA();
+        }
     }
 }
-
-let editor = new Editor();
-let careTaker = new CareTaker();
-editor.setContent("111");
-editor.setContent("222");
-careTaker.add(editor.saveContentToMemento());  // 保存 222 
-editor.setContent("333");
-careTaker.add(editor.saveContentToMemento()); // 333
-editor.setContent("444");
-
-console.log(editor.getContent());
-editor.getContentFromMemento(careTaker.get(1)); // 撤销
-console.log(editor.getContent());
-editor.getContentFromMemento(careTaker.get(0)); // 撤销
-console.log(editor.getContent());
