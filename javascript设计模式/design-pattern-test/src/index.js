@@ -1,3 +1,5 @@
-// 访问者模式  将数据操作和数据结构进行分离
+ import App from "./demo/App";
 
-// 解析器模式  语言语法如何定义，如何解析和编译  编译原理
+ let app = new App("app");
+
+ app.init();
