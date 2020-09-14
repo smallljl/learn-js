@@ -1,5 +1,12 @@
 const Enum = require("./common/Enum.js");
 
 module.exports = {
-  KEYWORD:new Enum("EKEYWORD"),
+  KEYWORD:new Enum("EKEYWORD",1),
+  VARIABLE : new Enum("VARIABLE",2),
+  OPERATOR: new Enum("OPERATOR",3),
+  BRACKET: new Enum("BRACKET",4),
+  INTEGER: new Enum("INTEGER",5),
+  FLOAT: new Enum("FLOAT",6),
+  BOOLEAN: new Enum("BOOLEAN",7),
+  STRING: new Enum("STRING",8)
 }
