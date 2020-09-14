@@ -10,18 +10,18 @@ class Token {
   }
 
   isVariable(){
-    return this._type === TokenType.VARIABLE
+    return this._type === TokenType.VARIABLE;
   }
 
   isScalar(){
     return this._type === TokenType.INTEGER ||
       this._type === TokenType.FLOAT || 
-      this._type === TokenType.STRING || 
-      this._type === TokenType.BOOLEAN
+      this._type === TokenType.STRING ||  
+      this._type === TokenType.BOOLEAN;
   }
 
   toString(){
-    return ``
+    return `type ${this._type},value ${this._value}`;
   }
 }
 
