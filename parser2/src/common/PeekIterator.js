@@ -16,10 +16,10 @@ class PeekIterator {
             return this.stackPutBacks.head;
         }
         const val = this.next();
-        this.stackPutBacks();
-        return val;
+        this.putBack();
+        return val || this.endToken;
     }
-    pubBack(){
+    putBack(){
         if(this.queueCache.length > 0){
             this.stackPutBacks.push(this.queueCache.pop());
         }
@@ -37,7 +37,7 @@ class PeekIterator {
             }
         }
         // 处理缓存
-        while(this.queueCache.length < CACHE_SIZE -1){
+        while(this.queueCache.length > CACHE_SIZE -1){
             this.queueCache.shift();
         }
         this.queueCache.push(val);
