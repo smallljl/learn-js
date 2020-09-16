@@ -1,7 +1,12 @@
 class Enum {
-  constructor(type,value){
-    this.type = type;
-    this.value = value;
+  
+  constructor(type, value){
+      this.type = type
+      this.value = value
+  }
+
+  toString(){
+      return this.type;
   }
 }
 
