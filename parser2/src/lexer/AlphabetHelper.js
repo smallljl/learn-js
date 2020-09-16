@@ -1,8 +1,16 @@
 class AlphabetHelper {
-    static ptnLetter = /^[a-zA-Z]$/; // 字母
-    static ptnNumber = /^[0-9]$/; // 数字
-    static ptnLiteral = /^[_a-zA-Z0-9]$/; // 文本
-    static ptnoperator = /^[+-\\*/><=!&|^%]$/;
+    static get ptnLetter(){
+        return /^[a-zA-Z]$/
+    }   // 字母
+    static get ptnNumber(){
+        return /^[0-9]$/;
+    } 
+    static get ptnLiteral(){
+        return /^[_a-zA-Z0-9]$/;
+    }  // 文本
+    static get ptnoperator(){
+        return /^[+-\\*/><=!&|^%]$/;
+    }
 
     static isLetter(c){
         return AlphabetHelper.ptnLetter.test(c);
