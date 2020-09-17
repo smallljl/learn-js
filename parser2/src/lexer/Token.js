@@ -31,6 +31,10 @@ class Token {
     return this._type === TokenType.VARIABLE;
   }
 
+  isValue(){
+    return  this.isScalar() || this.isVariable();
+  }
+
   isScalar(){
     return this._type === TokenType.INTEGER ||
       this._type === TokenType.FLOAT || 
@@ -77,7 +81,7 @@ class Token {
     let state = 0;
     while(it.hasNext()){
       let c = it.next();
-      switch(c){
+      switch(state){
         case 0:
           if(c === '"'){
             state = 1;
@@ -102,6 +106,7 @@ class Token {
           break;
       }
     }
+    // 循环完了最终没有发现结尾符
     throw new LexicalException("Unexpected error");
   }
 
