@@ -31,6 +31,10 @@ class Token {
     return this._type === TokenType.VARIABLE;
   }
 
+  isValue(){
+    return  this.isScalar() || this.isVariable();
+  }
+
   isScalar(){
     return this._type === TokenType.INTEGER ||
       this._type === TokenType.FLOAT || 
