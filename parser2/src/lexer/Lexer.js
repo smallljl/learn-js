@@ -4,7 +4,6 @@ const TokenType = require("./TokenType");
 const AlphabetHelper = require("./AlphabetHelper");
 const LexicalException = require("./LexicalException");
 
-
 /**
  * 词法分析
  */
@@ -46,12 +45,26 @@ class Lexer {
             
             if((c === "+" || c === "-") && AlphabetHelper.isNumber(lookahead)){
                 const lastToken = tokens[tokens.length - 1] || null;
-                if(lastToken)
+                if(lastToken === null || !lastToken.isValue()){
+                    it.putBack();
+                    tokens.push(Token.makeNumber(it));
+                    continue;
+                }
             }
 
+            if(AlphabetHelper.isOperator(c)){
+                it.putBack();
+                tokens.push(Token.makeOp(it));
+                continue;
+            }
         
+            throw LexicalException.fromChar(c);
 
         }
-        return null;
+        return tokens;
+    }
+
+    static fromFile(src){
+        const content = fs.
     }
 }
