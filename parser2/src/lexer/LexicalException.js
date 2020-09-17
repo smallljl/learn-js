@@ -10,6 +10,6 @@ class LexicalException extends Error{
     static fromChar(c){
         return new LexicalException(`unexpected char ${c}`);
     }
-}
+} 
 
 module.exports = LexicalException;

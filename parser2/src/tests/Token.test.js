@@ -25,7 +25,15 @@ describe("Token", () => {
         assertToken(token3, "abc", TokenType.VARIABLE)
     });
 
-  
+
+    it("makeString", () => {
+        const tests = ["'123'",'"123"'];
+        for(let test of tests){
+            const it = new PeekIterator(arrayToGenerator([...test]));
+            const token = Token.makeString(it);
+            assertToken(token,test,TokenType.STRING);
+        }
+    });
 
     it("makeOp",()=>{
         const tests = [

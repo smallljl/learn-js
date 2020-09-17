@@ -25,6 +25,7 @@ class Lexer {
                 continue;
             }
 
+            // 提取注释的程序
             if(c === "/"){
                 if(lookahead === "/"){
                     // 删除当前注释行
@@ -73,8 +74,10 @@ class Lexer {
                 continue;
             }
 
+            // **********
+            // 这里 + - 号也可以作为数字的开头
             if((c === "+" || c === "-") && AlphabetHelper.isNumber(lookahead)){
-                // 跳过: a + 1, 1 + 1
+                // 跳过: a + 1, 1 + 1  // 左边是值的类型不处理  + -
                 // +5, 3*-5
                 const lastToken = tokens[tokens.length - 1] || null;
                 // 没有值 +5的情况   有值 操作符号 3* -5   *为操作符号  
