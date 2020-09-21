@@ -1,5 +1,5 @@
 class ASTNode {
-  constructor(){
+  constructor(_parent=null,_type=null,_label=null){
     /**树结构 */
     this.children = [];
     this.parent = _parent;
@@ -25,6 +25,11 @@ class ASTNode {
  
   getChildren(){
     return this.children;
+  }
+
+  print(indent = 0){
+    console.log(`${"".padStart(indent*2, " ")} ${this.label}`);
+    this.children.forEach(x=>x.print(indent+1));
   }
 }
 

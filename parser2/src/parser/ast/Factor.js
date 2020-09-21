@@ -23,7 +23,7 @@ class Factor extends ASTNode {
       this.type = ASTNodeTypes.VARIABLE;
     } else {
       this.type = ASTNodeTypes.SCALAR;
-    }
+    } 
 
     this.label = token.getValue();
     this.lexeme = token; // 词法因子
