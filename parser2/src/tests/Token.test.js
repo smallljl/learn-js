@@ -25,7 +25,6 @@ describe("Token", () => {
         assertToken(token3, "abc", TokenType.VARIABLE)
     });
 
-
     it("makeString", () => {
         const tests = ["'123'",'"123"'];
         for(let test of tests){
