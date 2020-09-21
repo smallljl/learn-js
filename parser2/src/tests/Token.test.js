@@ -18,7 +18,7 @@ describe("Token", () => {
 
         const token1 = Token.makeVarOrKeyWord(it1)
         const token2 = Token.makeVarOrKeyWord(it2)
-        it1.next();   // 吃掉类似于空格的值
+        it1.next();   // 87
         const token3 = Token.makeVarOrKeyWord(it1)
         assertToken(token1, "if", TokenType.KEYWORD)
         assertToken(token2, "true", TokenType.BOOLEAN)
