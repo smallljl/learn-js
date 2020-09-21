@@ -5,7 +5,6 @@ const AlphabetHelper = require("./AlphabetHelper");
 const LexicalException = require("./LexicalException");
 const arrayToGenerator = require("../common/arrayToGenerator");
 
-
 /**
  * 词法分析器
  */
@@ -93,7 +92,6 @@ class Lexer {
                 tokens.push(Token.makeOp(it));
                 continue;
             }
-
             throw LexicalException.fromChar(c);
 
         }
