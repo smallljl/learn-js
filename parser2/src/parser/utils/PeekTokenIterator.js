@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2020-09-21 17:45:45
- * @LastEditTime: 2020-09-21 17:50:43
+ * @LastEditTime: 2020-09-22 09:19:47
  * @LastEditors: Please set LastEditors
  * @Description: In User Settings Edit
  * @FilePath: \parser2\src\parser\utils\PeekTokenIterator.js
@@ -22,7 +22,7 @@ class PeekTokenItertor extends PeekIterator{
     return token;
   }
 
-  nextMatch2(type){
+  nextMatch1(type){
     var token = this.next();
     if(token.getType() !== type){
       throw ParseException.fromToken(token);
