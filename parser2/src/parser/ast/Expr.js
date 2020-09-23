@@ -9,6 +9,8 @@
 const ASTNode = require("./ASTNode");
 const ASTNodeTypes = require("./ASTNodeTypes");
 const table = require("../utils/PriorityTable");
+const Variable = require("./Variable");
+const Scalar = require("./Scalar");
 
 class Expr extends ASTNode {
   constructor(parent){
@@ -18,7 +20,8 @@ class Expr extends ASTNode {
   static fromToken(parent, type, token){
     const expr = new Expr(parent);
     expr.label = token.getValue();
-    expr.lexeme = type;
+    expr.lexeme = token;
+    expr.type = type;
     return expr;
   }
 
@@ -35,40 +38,43 @@ class Expr extends ASTNode {
    *    
    *    // U -> (E) | ++E | --E
    *    E(t) -> F 因子 E_(t) | U 一元表达式 E_(t)
-    * @description:
+   * @description:
    * @param {type} 
    * @return {type} 
    */
   static parseExpr(parent,it){
-    return Expr.E(it,0);
+    return Expr.E(parent,it,0);
   }
 
   static E(parent, it, k){
     if(k < table.length -1){
       return Expr.combine(it,
-        ()=>Expr.E(it,k+1),
-        ()=>Expr.E_(it,k)
+        ()=>Expr.E(parent, it,k+1),
+        ()=>Expr.E_(parent,it,k)
       )
     } else {
       return Expr.race(
         it,
         ()=> 
           Expr.combine(
+            parent,
             it,
-            ()=>Expr.F(it),
-            ()=>Expr.E_(it,k)
+            ()=>Expr.F(parent, it),
+            ()=>Expr.E_(parent, it,k)
           ),
         ()=>
           Expr.combine(
+            parent,
             it,
-            ()=>Expr.U(it),
-            ()=>Expr.E_(it,k)
+            ()=>Expr.U(parent, it),
+            ()=>Expr.E_(parent, it,k)
           ),
         ()=>
           Expr.combine(
+            parent,
             it,
-            ()=>Expr.U(it),
-            ()=>Expr.E_(it,k)
+            ()=>Expr.U(parent,it),
+            ()=>Expr.E_(parent, it, k)
           )
       );
     }
@@ -80,12 +86,13 @@ class Expr extends ASTNode {
 
     if(table[k].indexOf(value) !== -1){
       it.nextMatch(value);
-      const expr = Expr.fromToken(ASTNodeTypes.BINARY_EXPR, token);
+      const expr = Expr.fromToken(parent,ASTNodeTypes.BINARY_EXPR, token);
       expr.addChild(
         Expr.combine(
+          parent,
           it,
-          ()=> Expr.E(it, k + 1),
-          ()=> Expr.E_(it, k, it)
+          ()=> Expr.E(parent, it, k + 1),
+          ()=> Expr.E_(parent, it, k)
         )
       );
 
@@ -96,14 +103,12 @@ class Expr extends ASTNode {
   }
 
   static F(parent, it){
-    const factor = Factor.parse(it);
-    if(factor === null){
-      return null;
-    }
-    if(it.hasNext() && it.peek().getValue() === "("){
-      return CallExpr.parse(factor, it);
-    }
-    return factor;
+     const token = it.peek();
+     if(token.isVariable()){
+       return new Variable(parent,it);
+     } else {
+       return new Scalar(parent,it);
+     }
   }
 
   static U(parent, it){
@@ -112,22 +117,22 @@ class Expr extends ASTNode {
 
     if(value === "("){
       it.nextMatch("(");
-      const expr = Expr.parse(it);
+      const expr = Expr.parseExpr(parent, it);
       it.nextMatch(")");
       return expr;
     } else if(value === "++" || value === "--" || value === "!"){
       const t = it.peek();
       it.nextMatch(value);
 
-      const expr = Expr.fromToken(ASTNodeTypes.UNARY_EXPR, t);
-      expr.addChild(Expr.parse(it));
+      const expr = Expr.fromToken(parent, ASTNodeTypes.UNARY_EXPR, t);
+      expr.addChild(Expr.parseExpr(parent, it));
       return expr;
     }
 
     return null;
   }
 
-  static combine(it,funcA,funcB){
+  static combine(parent,it,funcA,funcB){
     if(it.hasNext()){
       return null;
     }
