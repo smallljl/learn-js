@@ -1,11 +1,3 @@
-/*
- * @Author: your name
- * @Date: 2020-09-21 15:49:29
- * @LastEditTime: 2020-09-23 16:28:34
- * @LastEditors: Please set LastEditors
- * @Description: In User Settings Edit  
- * @FilePath: \parser2\src\parser\ast\Expr.js
- */
 const ASTNode = require("./ASTNode");
 const ASTNodeTypes = require("./ASTNodeTypes");
 const table = require("../utils/PriorityTable");
@@ -37,9 +29,10 @@ class Expr extends ASTNode {
    *    
    *    
    *    // U -> (E) | ++E | --E
+   *    // 终结条件
    *    E(t) -> F 因子 E_(t) | U 一元表达式 E_(t)
    * @description:
-   * @param {type} 
+   * @param {type}  
    * @return {type} 
    */
   static parseExpr(parent,it){
@@ -47,65 +40,62 @@ class Expr extends ASTNode {
   }
 
   static E(parent, it, k){
-    if(k < table.length -1){
-      return Expr.combine(it,
-        ()=>Expr.E(parent, it,k+1),
-        ()=>Expr.E_(parent,it,k)
-      )
+    if (k < table.length - 1) {
+      return Expr.combine(
+        parent,
+        it,
+        () => Expr.E(parent,it, k + 1),
+        () => Expr.E_(parent,it, k)
+      );
     } else {
       return Expr.race(
         it,
-        ()=> 
+        () =>
           Expr.combine(
             parent,
             it,
-            ()=>Expr.F(parent, it),
-            ()=>Expr.E_(parent, it,k)
+            () => Expr.F(parent,it),
+            () => Expr.E_(parent,it, k)
           ),
-        ()=>
+        () =>
           Expr.combine(
             parent,
             it,
-            ()=>Expr.U(parent, it),
-            ()=>Expr.E_(parent, it,k)
-          ),
-        ()=>
-          Expr.combine(
-            parent,
-            it,
-            ()=>Expr.U(parent,it),
-            ()=>Expr.E_(parent, it, k)
+            () => Expr.U(parent,it),
+            () => Expr.E_(parent,it, k)
           )
       );
     }
   }
 
+
+  // E_(k) -> op(k)  E(k+1) E_(k) | s'
   static E_(parent, it, k){
+    
     const token = it.peek();
     const value = token.getValue();
-
-    if(table[k].indexOf(value) !== -1){
+  
+    if (table[k].indexOf(value) !== -1) {
       it.nextMatch(value);
       const expr = Expr.fromToken(parent,ASTNodeTypes.BINARY_EXPR, token);
       expr.addChild(
         Expr.combine(
           parent,
           it,
-          ()=> Expr.E(parent, it, k + 1),
-          ()=> Expr.E_(parent, it, k)
+          () => Expr.E(parent, it, k + 1),
+          () => Expr.E_(parent,it, k)
         )
       );
-
+  
       return expr;
     }
-
     return null;
   }
 
   static F(parent, it){
-     const token = it.peek();
+     const token = it.peek(); 
      if(token.isVariable()){
-       return new Variable(parent,it);
+       return new Variable(parent,it);  // 会吃掉it
      } else {
        return new Scalar(parent,it);
      }
@@ -115,38 +105,36 @@ class Expr extends ASTNode {
     const token = it.peek();
     const value = token.getValue();
 
-    if(value === "("){
+    if (value === "(") {
       it.nextMatch("(");
-      const expr = Expr.parseExpr(parent, it);
+      const expr = Expr.parseExpr(parent,it);
       it.nextMatch(")");
       return expr;
-    } else if(value === "++" || value === "--" || value === "!"){
+    } else if (value === "++" || value === "--" || value === "!") {
       const t = it.peek();
       it.nextMatch(value);
 
-      const expr = Expr.fromToken(parent, ASTNodeTypes.UNARY_EXPR, t);
-      expr.addChild(Expr.parseExpr(parent, it));
+      const expr = Expr.fromToken(parent,ASTNodeTypes.UNARY_EXPR, t);
+      expr.addChild(Expr.parseExpr(parent,it));
       return expr;
     }
-
     return null;
   }
 
   static combine(parent,it,funcA,funcB){
-    if(it.hasNext()){
+    if (!it.hasNext()) {
       return null;
     }
     const a = funcA();
-    if(a === null){
+    if (a == null) {
       return it.hasNext() ? funcB() : null;
     }
-
     const b = it.hasNext() ? funcB() : null;
-    if(b === null){
+    if (b == null) {
       return a;
     }
-
-    const expr = new Expr(parent,ASTNodeTypes.BINARY_EXPR, b.lexeme);
+  
+    const expr = Expr.fromToken(parent,ASTNodeTypes.BINARY_EXPR, b.lexeme);
     expr.addChild(a);
     expr.addChild(b.getChild(0));
     return expr;
@@ -154,13 +142,14 @@ class Expr extends ASTNode {
   }
 
   static race(it,funcA,funcB){
-    if(!it.hasNext()){
+    if (!it.hasNext()) {
       return null;
     }
     const a = funcA();
-    if(a === null){
+    if (a == null) {
       return funcB();
     }
+    return a;
   }
 }
 

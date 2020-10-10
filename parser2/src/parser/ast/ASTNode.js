@@ -1,13 +1,13 @@
 class ASTNode {
   constructor(_parent=null,_type=null,_label=null){
     /**树结构 */
-    this.children = [];
-    this.parent = _parent;
+    this.children = [];   // 子节点
+    this.parent = _parent; // 父节点
 
     /**关键信息 */
-    this.lexeme = null;
-    this.type = _type;
-    this.label = _label;
+    this.lexeme = null;  
+    this.type = _type;  // 类型
+    this.label = _label; // 展示的值
   }
 
   getChild(index){
@@ -20,7 +20,7 @@ class ASTNode {
 
   // 词法单元
   getLexeme(){
-    return this.lexeme;
+    return this.lexeme;   // 词法单元的具体信息
   }
  
   getChildren(){

@@ -1,8 +1,8 @@
 /*
  * @Author: your name
  * @Date: 2020-09-21 17:58:58
- * @LastEditTime: 2020-09-22 09:33:23
- * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2020-10-10 09:54:17
+ * @LastEditors: your name
  * @Description: In User Settings Edit
  * @FilePath: \parser2\src\parser\SimpleParser.js
  */
