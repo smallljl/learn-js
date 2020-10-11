@@ -10,95 +10,111 @@ const Keywords = new Set([
   "while",
   "break",
   "func",
-  "return"
+  "return",
+  "int",
+  "float",
+  "bool",
+  "void",
+  "string"
 ]);
 
 class Token {
-  constructor(type,value){
+  constructor(type, value) {
     this._type = type;
     this._value = value;
   }
 
-  getType(){
+  getType() {
     return this._type;
   }
 
-  getValue(){
+  getValue() {
     return this._value;
   }
 
-  isVariable(){
-    return this._type === TokenType.VARIABLE;
+  isVariable() {
+    return this._type == TokenType.VARIABLE;
   }
 
-  isValue(){
-    return  this.isScalar() || this.isVariable();
+  isValue() {
+    return this.isScalar() || this.isVariable();
   }
 
-  isScalar(){
-    return this._type === TokenType.INTEGER ||
-      this._type === TokenType.FLOAT || 
-      this._type === TokenType.STRING ||  
-      this._type === TokenType.BOOLEAN;
+  isType() {
+    return (
+      this._value === "bool" ||
+      this._value === "int" ||
+      this._value === "float" ||
+      this._value === "void" ||
+      this._value === "string"
+    );
   }
 
-  toString(){
-    return `type ${this._type},value ${this._value}`;
+  isScalar() {
+    return (
+      this._type == TokenType.INTEGER ||
+      this._type == TokenType.FLOAT ||
+      this._type == TokenType.STRING ||
+      this._type == TokenType.BOOLEAN
+    );
   }
 
-  /*
-   * 关键字的处理
-   */
-  static makeVarOrKeyWord(it){
+  toString() {
+    return `type ${this._type.type}, value ${this._value}`;
+  }
+
+  static makeVarOrKeyword(it) {
     let s = "";
-    while(it.hasNext()){
-      const c = it.peek();  // 将改元素添加到栈里面
-      if(AlphabetHelper.isLiteral(c)){
-        s +=c ;
+
+    while (it.hasNext()) {
+      const c = it.peek();
+
+      if (AlphabetHelper.isLiteral(c)) {
+        s += c;
       } else {
         break;
       }
-      // 不变式  吃掉peek c
+      // 不变式
       it.next();
     }
-    if(Keywords.has(s)){
+
+    if (Keywords.has(s)) {
       return new Token(TokenType.KEYWORD, s);
     }
 
-    if(s === "true" || s === "false"){
+    if (s == "true" || s == "false") {
       return new Token(TokenType.BOOLEAN, s);
     }
 
     return new Token(TokenType.VARIABLE, s);
   }
 
-  /**
-   * 提取字符串
-   * @param {*} it 
-   */
-  static makeString(it){
+  static makeString(it) {
     let s = "";
+
     let state = 0;
-    while(it.hasNext()){
+
+    while (it.hasNext()) {
       let c = it.next();
-      switch(state){
+
+      switch (state) {
         case 0:
-          if(c === '"'){
+          if (c == '"') {
             state = 1;
           } else {
             state = 2;
           }
-          s+=c;
+          s += c;
           break;
         case 1:
-          if(c === '"'){
+          if (c == '"') {
             return new Token(TokenType.STRING, s + c);
           } else {
             s += c;
           }
           break;
         case 2:
-          if(c === "'"){
+          if (c == "'") {
             return new Token(TokenType.STRING, s + c);
           } else {
             s += c;
@@ -106,21 +122,17 @@ class Token {
           break;
       }
     }
-    // 循环完了最终没有发现结尾符
     throw new LexicalException("Unexpected error");
   }
 
-  /**
-   * 
-   * @param {提取操作符} it 
-   */
-  static makeOp(it){
+  static makeOp(it) {
     let state = 0;
-    while(it.hasNext()){
-      let lookhead = it.next();
-      switch(state){
+    while (it.hasNext()) {
+      let lookahead = it.next();
+
+      switch (state) {
         case 0:
-          switch(lookhead){
+          switch (lookahead) {
             case "+":
               state = 1;
               break;
@@ -163,188 +175,189 @@ class Token {
               return new Token(TokenType.OPERATOR, ";");
           }
           break;
-        case 1:
-          if(lookhead === "+"){
+        case 1: {
+          if (lookahead == "+") {
             return new Token(TokenType.OPERATOR, "++");
-          } else if(lookhead === "="){
+          } else if (lookahead == "=") {
             return new Token(TokenType.OPERATOR, "+=");
           } else {
             it.putBack();
             return new Token(TokenType.OPERATOR, "+");
           }
+        }
         case 2:
-          if(lookhead === "-"){
+          if (lookahead == "-") {
             return new Token(TokenType.OPERATOR, "--");
-          } else if(lookhead === "="){
-            return new Token(TokenType.OPERATOR, "+=");
+          } else if (lookahead == "=") {
+            return new Token(TokenType.OPERATOR, "-=");
           } else {
             it.putBack();
             return new Token(TokenType.OPERATOR, "-");
           }
         case 3:
-          if(lookhead === "="){
+          if (lookahead == "=") {
             return new Token(TokenType.OPERATOR, "*=");
           } else {
             it.putBack();
             return new Token(TokenType.OPERATOR, "*");
           }
         case 4:
-          if(lookhead === "="){
+          if (lookahead == "=") {
             return new Token(TokenType.OPERATOR, "/=");
           } else {
             it.putBack();
             return new Token(TokenType.OPERATOR, "/");
           }
         case 5:
-          if(lookhead === "="){
+          if (lookahead == "=") {
             return new Token(TokenType.OPERATOR, ">=");
-          } else if(lookhead === ">"){
+          } else if (lookahead == ">") {
             return new Token(TokenType.OPERATOR, ">>");
           } else {
             it.putBack();
             return new Token(TokenType.OPERATOR, ">");
           }
         case 6:
-          if(lookhead === "="){
+          if (lookahead == "=") {
             return new Token(TokenType.OPERATOR, "<=");
-          } else if(lookhead === "<"){
-            return new Token(TokenType.OPERATOR,"<<");
+          } else if (lookahead == "<") {
+            return new Token(TokenType.OPERATOR, "<<");
           } else {
             it.putBack();
-            return new Token(TokenType.OPERATOR,"<");
+            return new Token(TokenType.OPERATOR, "<");
           }
         case 7:
-          if(lookhead === "="){
+          if (lookahead == "=") {
             return new Token(TokenType.OPERATOR, "==");
           } else {
             it.putBack();
-            return new Token(TokenType.OPERATOR,"=");
+            return new Token(TokenType.OPERATOR, "=");
           }
         case 8:
-          if(lookhead === "="){
-            return new Token(TokenType.OPERATOR,"!=");
+          if (lookahead == "=") {
+            return new Token(TokenType.OPERATOR, "!=");
           } else {
             it.putBack();
             return new Token(TokenType.OPERATOR, "!");
           }
         case 9:
-          if(lookhead === "&"){
+          if (lookahead == "&") {
             return new Token(TokenType.OPERATOR, "&&");
-          } else if(lookhead === "="){
+          } else if (lookahead == "=") {
             return new Token(TokenType.OPERATOR, "&=");
           } else {
             it.putBack();
-            return new Token(TokenType.OPERATOR,"&");
+            return new Token(TokenType.OPERATOR, "&");
           }
         case 10:
-          if(lookhead === "|"){
+          if (lookahead == "|") {
             return new Token(TokenType.OPERATOR, "||");
-          } else if(lookhead === "="){
+          } else if (lookahead == "=") {
             return new Token(TokenType.OPERATOR, "|=");
           } else {
             it.putBack();
-            return new Token(TokenType.OPERATOR,"|");
+            return new Token(TokenType.OPERATOR, "|");
           }
         case 11:
-          if(lookhead === "^"){
-            return new Token(TokenType.OPERATOR,"^^");
-          } else if(lookhead === "="){
-            return new Token(TokenType.OPERATOR,"^=");
+          if (lookahead == "^") {
+            return new Token(TokenType.OPERATOR, "^^");
+          } else if (lookahead == "=") {
+            return new Token(TokenType.OPERATOR, "^=");
           } else {
             it.putBack();
-            return new Token(TokenType.OPERATOR,"^");
+            return new Token(TokenType.OPERATOR, "^");
           }
         case 12:
-          if(lookhead === "="){
-            return new Token(TokenType.OPERATOR,"%=");
+          if (lookahead == "=") {
+            return new Token(TokenType.OPERATOR, "%=");
           } else {
             it.putBack();
-            return new Token(TokenType.OPERATOR,"%");
+            return new Token(TokenType.OPERATOR, "%");
           }
       }
-    }
+    } // end while
+
     throw new LexicalException("Unexpected error");
   }
 
-  /**
-   * 
-   * @param {提取number} it 
-   */
-  static makeNumber(it){
+  static makeNumber(it) {
     let state = 0;
     let s = "";
-    while(it.hasNext()){
-      let lookhead  = it.peek();
-      switch(state){
+
+    while (it.hasNext()) {
+      let lookahead = it.peek();
+
+      switch (state) {
         case 0:
-          if(lookhead === "0"){
+          if (lookahead == "0") {
             state = 1;
-          } else if(AlphabetHelper.isNumber(lookhead)){
+          } else if (AlphabetHelper.isNumber(lookahead)) {
             state = 2;
-          } else if(lookhead === "+" || lookhead === "-"){
+          } else if (lookahead == "+" || lookahead == "-") {
             state = 3;
-          } else if(lookhead === "."){
+          } else if (lookahead == ".") {
             state = 5;
           }
           break;
         case 1:
-          if(lookhead === "0"){
+          if (lookahead == "0") {
             state = 1;
-          } else if(lookhead == "."){
+          } else if (lookahead == ".") {
             state = 4;
+          } else if (AlphabetHelper.isNumber(lookahead)) {
+            state = 2;
           } else {
-            return new Token(Token.INTEGER, s);
+            return new Token(TokenType.INTEGER, s);
           }
           break;
         case 2:
-          if(AlphabetHelper.isNumber(lookhead)){
+          if (AlphabetHelper.isNumber(lookahead)) {
             state = 2;
-          } else if(lookhead === "."){
+          } else if (lookahead == ".") {
             state = 4;
           } else {
-            return new Token(TokenType.INTEGER, s );
+            return new Token(TokenType.INTEGER, s);
           }
           break;
         case 3:
-          if(AlphabetHelper.isNumber(lookhead)){
+          if (AlphabetHelper.isNumber(lookahead)) {
             state = 2;
-          } else if(lookhead === "."){
+          } else if (lookahead == ".") {
             state = 5;
           } else {
-            throw  LexicalException.fromChar(lookhead);
+            throw LexicalException.fromChar(lookahead);
           }
           break;
         case 4:
-          if(lookhead === "."){
-            throw LexicalException.fromChar(lookhead);
-          } else if(AlphabetHelper.isNumber(lookhead)){
+          if (lookahead == ".") {
+            throw LexicalException.fromChar(lookahead);
+          } else if (AlphabetHelper.isNumber(lookahead)) {
             state = 20;
           } else {
             return new Token(TokenType.FLOAT, s);
           }
           break;
         case 5:
-          if(AlphabetHelper.isNumber(lookhead)){
+          if (AlphabetHelper.isNumber(lookahead)) {
             state = 20;
           } else {
-            throw LexicalException.fromChar(lookhead);
+            throw LexicalException.fromChar(lookahead);
           }
           break;
         case 20:
-          if(AlphabetHelper.isNumber(lookhead)){
+          if (AlphabetHelper.isNumber(lookahead)) {
             state = 20;
-          } else if(lookhead === "."){
-            throw LexicalException.fromChar(lookhead);
+          } else if (lookahead == ".") {
+            throw LexicalException.fromChar(lookahead);
           } else {
-            return new Token(TokenType.FLOAT, s );
+            return new Token(TokenType.FLOAT, s);
           }
       }
-      s += lookhead;
+      s += lookahead;
       it.next();
     } // end while
     throw new LexicalException("Unexpected error");
   }
-  
 }
 
 module.exports = Token;

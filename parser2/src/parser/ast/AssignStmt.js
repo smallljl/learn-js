@@ -1,30 +1,25 @@
-const Stmt = require("./Stmt");
 const ASTNodeTypes = require("./ASTNodeTypes");
 const ParseException = require("../utils/ParseException");
-
-
+const {Stmt} = require('./index')
 class AssignStmt extends Stmt {
-  constructor(parent){
-    super(parent,ASTNodeTypes.ASSIGN_STMT,"assign")
+  constructor() {
+    super(ASTNodeTypes.ASSIGN_STMT, "assign");
   }
 }
 
-
-const { Factor,Expr } = require("./index");
-
+const { Factor, Expr } = require("./index");
 AssignStmt.parse = it => {
-  const stmt = new AssignStmt();
+  const stmt = new AssignStmt()
   const tkn = it.peek();
   const factor = Factor.parse(it);
-  if(factor === null){
+  if (factor == null) {
     throw ParseException.fromToken(tkn);
   }
   stmt.addChild(factor);
   const lexeme = it.nextMatch("=");
-  const expr = Expr.parse(null,it);
+  const expr = Expr.parse(it);
   stmt.addChild(expr);
   stmt.setLexeme(lexeme);
   return stmt;
-}
-
+};
 module.exports = AssignStmt;

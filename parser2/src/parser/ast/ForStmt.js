@@ -1,11 +1,10 @@
-
-const Stmt = require("./Stmt");
-const ASTNodeType = require("./ASTNodeTypes");
-
+const Stmt = require('./Stmt')
+const ASTNodeTypes = require('./ASTNodeTypes')
 class ForStmt extends Stmt {
-  constructor(){
-    super(ASTNodeType.FOR_STMT,"for")
-  }
+    constructor() {
+        super(ASTNodeTypes.FOR_STMT, 'for')
+    }
 }
 
-module.exports = ForStmt;
+
+module.exports = ForStmt 

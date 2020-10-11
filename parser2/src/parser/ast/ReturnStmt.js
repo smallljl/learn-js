@@ -1,20 +1,19 @@
-const Stmt = require("./Stmt");
-const ASTNodeTypes = require("./ASTNodeTypes");
-class ReturnStmt  extends Stmt {
+const Stmt = require('./Stmt')
+const ASTNodeTypes = require('./ASTNodeTypes')
+class ReturnStmt extends Stmt {
     constructor(){
-        super(ASTNodeTypes.RETUEN_STMT, "return");
+        super(ASTNodeTypes.RETURN_STMT, "return")
     }
 }
 
-module.exports = ReturnStmt;
+module.exports = ReturnStmt
 
-const { Expr } = require("./index");
-
+const {Expr} = require('./index')
 ReturnStmt.parse = (it) => {
-    const lexeme = it.nextMatch("return");
-    const expr = Expr.parse(it);
-    const stmt = new ReturnStmt();
-    stmt.setLexeme(lexeme);
-    stmt.addChild(expr);
+    const lexeme = it.nextMatch("return")
+    const expr = Expr.parse(it)
+    const stmt = new ReturnStmt()
+    stmt.setLexeme(lexeme)
+    stmt.addChild(expr)
     return stmt;
 }

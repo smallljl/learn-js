@@ -1,31 +1,32 @@
-const ASTNode = require("./ASTNode");
-const ASTNodeTypes = require("./ASTNodeTypes");
+const ASTNode = require('./ASTNode')
+const ASTNodeTypes = require('./ASTNodeTypes')
 
 class FunctionArgs extends ASTNode {
+
     constructor(){
-        super(ASTNodeTypes.FUNCTION_ARGS,"args");
+        super(ASTNodeTypes.FUNCTION_ARGS, "args")
     }
 }
 
-module.exports = FunctionArgs;
+module.exports = FunctionArgs
 
-const { Factor } = require("./index");
+const {Factor} = require('./index')
 
-FunctionArgs.prase = it => {
-    // int a , int b , string c
+FunctionArgs.parse = it => {
+    // int a, int b, string c
 
-    const args = new FunctionArgs();
+    const args = new FunctionArgs()
 
-    while(it.peek().isType()){
-        const type = it.next();
-        const variable = Factor.parse(it);
-        args.addChild(variable);
-        variable.setTypeLexeme(type);
+    while(it.peek().isType()) {
+        const type = it.next()
+        const variable = Factor.parse(it)
+        args.addChild(variable)
+        variable.setTypeLexeme(type)
 
-        if(it.peek().getValue() !== ")"){
-            it.nextMatch(",");  // 没结束吃掉,
+        if(it.peek().getValue() !== ')') {
+            it.nextMatch(',')
         }
     }
-    return args;
+    return args
 
 }

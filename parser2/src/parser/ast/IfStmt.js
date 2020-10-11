@@ -66,7 +66,7 @@ IfStmt.parseTail = (it) => {
   it.nextMatch("else");
   const lookahead = it.peek();
 
-  if (lookahead.getValue() === "{") {  
+  if (lookahead.getValue() === "{") {
     return Block.parse(it)
   } else if (lookahead.getValue() === "if") {
     return IfStmt.parse(it)

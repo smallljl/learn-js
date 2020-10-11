@@ -1,15 +1,15 @@
 /**
- * 处理异常的类
+ * 异常处理
  */
-class LexicalException extends Error{
-    
+class LexicalException extends Error {
+
     constructor(msg){
-        super(msg);
+        super(msg)
     }
 
-    static fromChar(c){
-        return new LexicalException(`unexpected char ${c}`);
+    static fromChar(c) {
+        return new LexicalException(`unexpected char ${c}`)
     }
-} 
+}
 
-module.exports = LexicalException;
+module.exports = LexicalException

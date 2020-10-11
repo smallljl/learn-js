@@ -1,8 +1,9 @@
-const LinkedList = require('linkedlist');
+const LinkedList = require('linkedlist')
 
 const CACHE_SIZE = 10
 
 class PeekIterator {
+
 
     constructor(it, endToken = null){
         this.it = it
@@ -17,45 +18,51 @@ class PeekIterator {
 
     peek(){
         if(this.stackPutBacks.length > 0) {
-            return this.stackPutBacks.tail;
+            return this.stackPutBacks.tail
         }
 
-        const val = this.next();
-        this.putBack();
-        return val  || this.endToken;
+        const val = this.next()
+        this.putBack()
+        return val
 
     }
 
     putBack(){
         if(this.queueCache.length > 0) {
-            this.stackPutBacks.push(this.queueCache.pop());
+            this.stackPutBacks.push(this.queueCache.pop())
         }
     }
 
     hasNext(){
-        return this.endToken || !!this.peek();
+        return this.endToken || !!this.peek()
     }
 
     next(){
-        let val = null;
+        let val = null 
 
         if(this.stackPutBacks.length > 0) {
-            val = this.stackPutBacks.pop();
+            val = this.stackPutBacks.pop()
         } else {
-            val = this.it.next().value;
+            val = this.it.next().value
             if(val === undefined) {
-                const tmp = this.endToken;
-                this.endToken = null;
-                val = tmp;
+                const tmp = this.endToken
+                this.endToken = null
+                val = tmp 
             }
         }
+
         // 处理缓存
         while(this.queueCache.length > CACHE_SIZE - 1) {
-            this.queueCache.shift();
+            this.queueCache.shift()
         }
-        this.queueCache.push(val);
-        return val;
+        this.queueCache.push(val)
+
+        return val
+
     }
+
+
+
 }
 
-module.exports = PeekIterator;
+module.exports = PeekIterator

@@ -123,14 +123,14 @@ Expr.combine = (it, funcA, funcB) => {
   }
   const a = funcA();
   if (a == null) {
-    return null;  // a为空的时候返回空值
+    return null;
     // return it.hasNext() ? funcB() : null
   }
   const b = it.hasNext() ? funcB() : null;
   if (b == null) {
     return a;
   }
-  // a 和 b 都有值的情况  表达式a  符号 表达式2
+
   const expr = Expr.fromToken(ASTNodeTypes.BINARY_EXPR, b.lexeme);
   expr.addChild(a);
   expr.addChild(b.getChild(0));

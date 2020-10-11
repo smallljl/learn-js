@@ -1,32 +1,23 @@
+
 class AlphabetHelper {
-    static get ptnLetter(){
-        return /^[a-zA-Z]$/
-    }   // 字母
-    static get ptnNumber(){
-        return /^[0-9]$/;
-    } 
-    static get ptnLiteral(){
-        return /^[_a-zA-Z0-9]$/;
-    }  // 文本
-    static get ptnoperator(){
-        return /^[+-\\*/><=!&|^%]$/;
-    }
+  
+    static ptnLetter = /^[a-zA-Z]$/
+    static ptnNumber = /^[0-9]$/
+    static ptnLiteral = /^[_a-zA-Z0-9]$/
+    static ptnOperator = /^[+\-*/><=!&|^%,]$/
 
-    static isLetter(c){
-        return AlphabetHelper.ptnLetter.test(c);
+    static isLetter(c) {
+        return AlphabetHelper.ptnLetter.test(c)
     }
-
-    static isNumber(c){
-        return AlphabetHelper.ptnNumber.test(c);  
+    static isNumber(c) {
+        return AlphabetHelper.ptnNumber.test(c)
     }
-
-    static isLiteral(c){
-        return AlphabetHelper.ptnLiteral.test(c);
+    static isLiteral(c) {
+        return AlphabetHelper.ptnLiteral.test(c)
     }
-
-    static isOperator(c){
-        return AlphabetHelper.ptnoperator.test(c);
+    static isOperator (c) {
+        return AlphabetHelper.ptnOperator.test(c)
     }
 }
 
-module.exports = AlphabetHelper;
+module.exports = AlphabetHelper

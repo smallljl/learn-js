@@ -1,7 +1,7 @@
 const Lexer = require("../lexer/Lexer");
 const arrayToGenerator = require("../common/arrayToGenerator");
 const PeekTokenIterator = require("../parser/utils/PeekTokenIterator");
-const ParserUtils = require("../parser/utils/ParseUtils");
+const ParserUtils = require("../parser/utils/ParserUtils");
 const path = require('path')
 const { assert } = require("chai");
 const {DeclareStmt, AssignStmt, IfStmt, Stmt} = require("../parser/ast/index");

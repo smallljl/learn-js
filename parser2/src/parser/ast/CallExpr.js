@@ -13,14 +13,13 @@ module.exports = CallExpr
 
 CallExpr.parse = (factor, it) => {
     const expr = new CallExpr()
-    expr.addChild(factor); //  不理解
+    expr.addChild(factor)
 
     it.nextMatch("(")
     let p = null
     while((p = Expr.parse(it)) != null) {
-        expr.addChild(p);
-        // peek 下一个值  保存到back里面
-        if(!it.peek().getValue() === ")") {  // 
+        expr.addChild(p)
+        if(!it.peek().getValue() === ")") {
             it.nextMatch(",")
         }
     }

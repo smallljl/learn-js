@@ -1,25 +1,21 @@
-const Stmt = require("./Stmt");
-const ASTNodeType = require("./ASTNodeTypes");
-/**
- * @description:语句块 
- * @param {type} 
- * @return {type} 
- */
+const ASTNodeTypes = require('./ASTNodeTypes')
+const {Stmt} = require('./index')
 class Block extends Stmt {
-  constructor(){
-    super(ASTNodeType.BLOCK,"block")
-  }
+    constructor() {
+        super(ASTNodeTypes.BLOCK, 'block')
+    }
 }
+
+module.exports = Block 
 
 Block.parse = (it) => {
-  it.nextMatch("{");
-  const block = new Block();  // type label
-  let stmt = null;
-  while((stmt = Stmt.parse(it)) != null){  // 语法解析
-    block.addChild(stmt);
-  }
-  it.nextMatch("}");
-  return block;
-}
+    it.nextMatch("{")
+    const block = new Block()
+    let stmt = null
 
-module.exports = Block;
+    while( (stmt = Stmt.parse(it)) != null) {
+        block.addChild(stmt);
+    }
+    it.nextMatch("}")
+    return block
+}
