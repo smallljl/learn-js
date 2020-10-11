@@ -11,10 +11,11 @@ describe("SimpleParser",()=>{
         const lexer = new Lexer();
         const tokens = lexer.analyse(arrayToGenerator([...source]));
         const tokenIt = new PeekTokenIterator(arrayToGenerator(tokens));
-      
+        debugger
         const expr = SimpleParser.parse(tokenIt);
         assert.equal(expr.children.length,2);
 
+        assert.equal(expr.lexeme.getValue(), "+")
         const v1 = expr.getChild(0);
         const e2 = expr.getChild(1);
         assert.equal(v1.lexeme.getValue(),"1");

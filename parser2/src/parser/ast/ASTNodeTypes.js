@@ -13,8 +13,11 @@ module.exports = {
   IF_STMT: new Enum("IF_STMT", 5),
   WHILE_STMT: new Enum("WHILE_STMT", 6),
   FOR_STMT: new Enum("FOR_STMT", 7),
-  ASSIGN_STMT: new Enum("ASSIGN_STMT", 8),  // 合并
+  ASSIGN_STMT: new Enum("ASSIGN_STMT", 8),  // 赋值语句
   FUNCTION_DECLARE_STME : new Enum("FUNCTION_DECLARE_STMT", 9),
   DECLARE_STIME: new Enum("DECLARE_STIME",10),  // 声明
-  SCALAR: new Enum("SCALAR", 11)  // 常量
+  SCALAR: new Enum("SCALAR", 11),  // 常量
+  RETUEN_STMT: new Enum("RETUEN_STMT",12),
+  FUNCTION_ARGS: new Enum("FUNCTION_ARGS",13),
+  CALL_EXPR: new Enum("CALL_EXPR",14)
 }

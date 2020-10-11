@@ -6,9 +6,20 @@ const ASTNodeType = require("./ASTNodeTypes");
  * @return {type} 
  */
 class Block extends Stmt {
-  constructor(parent){
-    super(parent,ASTNodeType.BLOCK,"block")
+  constructor(){
+    super(ASTNodeType.BLOCK,"block")
   }
+}
+
+Block.parse = (it) => {
+  it.nextMatch("{");
+  const block = new Block();  // type label
+  let stmt = null;
+  while((stmt = Stmt.parse(it)) != null){  // 语法解析
+    block.addChild(stmt);
+  }
+  it.nextMatch("}");
+  return block;
 }
 
 module.exports = Block;
