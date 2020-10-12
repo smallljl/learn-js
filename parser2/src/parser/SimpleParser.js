@@ -18,10 +18,11 @@ class SimpleParser {
         expr.label = "+"
         expr.type = ASTNodeTypes.BINARY_EXPR
         expr.lexeme = op
-        expr.addChild(SimpleParser.parse(it))
+        expr.addChild(SimpleParser.parse(it));
 
         return expr
     }
+
 }
 
 module.exports = SimpleParser

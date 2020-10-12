@@ -32,7 +32,6 @@ const { Factor, CallExpr } = require("./index");
  *   E(t) -> F E_(t) | U E_(t)
  *
  *
- *
  * @param {*} it
  */
 Expr.parse = it => {

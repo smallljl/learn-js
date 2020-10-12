@@ -3,7 +3,6 @@ const {Factor} = require('./index')
 
 class Variable extends Factor{
 
-
     constructor(token){
         super(token)
         this.type = ASTNodeTypes.VARIABLE
@@ -12,14 +11,12 @@ class Variable extends Factor{
 
 
     setTypeLexeme(lexeme){
-        this.typeLexeme = lexeme
+        this.typeLexeme = lexeme;
     }
 
     getTypeLexeme(){
-        return this.typeLexeme
+        return this.typeLexeme;
     }
-
-
 
 }
 
