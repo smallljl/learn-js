@@ -62,8 +62,12 @@ class Symbol {  // 符号
         return this.lexeme;
     }
 
-    getLayerOffset(offset){
+    setLayerOffset(offset){
         this.layerOffset = offset;
+    }
+
+    getLayerOffset(){
+        return this.layerOffset;
     }
 
     toString(){

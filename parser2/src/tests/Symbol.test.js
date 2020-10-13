@@ -45,7 +45,8 @@ describe("SymbolTable", ()=>{
 
     assert.equal(symbolA.getOffset(), 0)
     assert.equal(symbolB.getOffset(), 1)
-    assert.equal(anotherSymbolB.getOffset(), 1)
+    assert.equal(anotherSymbolB.getOffset(), 1);
+    console.log(anotherSymbolB.getLayerOffset());
     assert.equal(anotherSymbolB.getLayerOffset(), 1)
     assert.equal(symbolC.getOffset(), 0)
     assert.equal(symbolC.getLayerOffset(), 0)

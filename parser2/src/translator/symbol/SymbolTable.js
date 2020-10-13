@@ -59,7 +59,7 @@ class SymbolTable {
 
         if(symbol){
             symbol = symbol.copy();
-            symbol.getLayerOffset(layerOffset);
+            symbol.setLayerOffset(layerOffset);
             return symbol;
         }
 
@@ -73,12 +73,12 @@ class SymbolTable {
 
     /**
      * 通过lexeme 创建symbol
-     * @param {}} lexeme 
+     * @param {} lexeme 
      */
     createSymbolByLexeme(lexeme){
         let symbol = null;
         if(lexeme.isScalar()){
-            Symbol.createImmediateSymbol(lexeme);
+            symbol = Symbol.createImmediateSymbol(lexeme);
         } else {
             symbol = this.cloneFromSymbolTree(lexeme,0);   // 父级没有找到就新建
             if(symbol == null){

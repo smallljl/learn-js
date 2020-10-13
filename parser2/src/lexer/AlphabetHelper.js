@@ -1,10 +1,18 @@
-
 class AlphabetHelper {
   
-    static ptnLetter = /^[a-zA-Z]$/
-    static ptnNumber = /^[0-9]$/
-    static ptnLiteral = /^[_a-zA-Z0-9]$/
-    static ptnOperator = /^[+\-*/><=!&|^%,]$/
+    static get ptnLetter(){
+        return /^[a-zA-Z]$/;
+    }
+
+    static get ptnNumber(){
+        return /^[0-9]$/;
+    } 
+    static get ptnLiteral(){
+        return /^[_a-zA-Z0-9]$/;
+    } 
+    static get ptnOperator(){
+        return /^[+\-*/><=!&|^%,]$/
+    } 
 
     static isLetter(c) {
         return AlphabetHelper.ptnLetter.test(c)
