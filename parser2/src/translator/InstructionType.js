@@ -1,7 +1,7 @@
 const Enum = require("../common/Enum");
 
 module.exports = {
-    ASSIGN : new Enum("ASSIGN, 1"),
+    ASSIGN : new Enum("ASSIGN", 1),
     GOTO: new Enum("GOTO", 2),
     IF : new Enum("IF",3),
     LABEL : new Enum("LABEL", 4),
@@ -9,4 +9,4 @@ module.exports = {
     RETURN : new Enum("RETURN", 6),
     SP : new Enum("SP", 7),
     PARAM : new Enum("PARAM", 8)
-}
+} 

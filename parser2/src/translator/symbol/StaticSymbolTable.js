@@ -7,7 +7,6 @@ class StaticSymbolTable {
 
   add(symbol){
     // a
-    // a
     const lexval = symbol.getLexeme().getValue();
     if(!this.offsetMap.has(lexval)){
       this.offsetMap.set(lexval, symbol);

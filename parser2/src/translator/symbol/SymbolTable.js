@@ -25,7 +25,7 @@ class SymbolTable {
 
     createLabel(label, lexeme){
         let labelSymbol = Symbol.createLabelSymbol(label,lexeme);
-        this.addSymbol(labelSymbol);
+        this.addSymbol(labelSymbol); 
     }
     
     /**
@@ -61,7 +61,7 @@ class SymbolTable {
             symbol = symbol.copy();
             symbol.setLayerOffset(layerOffset);
             return symbol;
-        }
+        } 
 
         if(this.parent != null){
             return this.parent.cloneFromSymbolTree(lexeme,layerOffset+1);

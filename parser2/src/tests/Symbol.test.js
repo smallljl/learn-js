@@ -19,7 +19,7 @@ describe("SymbolTable", ()=>{
         const symbolTable = new SymbolTable()
         symbolTable.createSymbolByLexeme(new Token(TokenType.VARIABLE, "a"))
 
-        const childTable = new SymbolTable()
+        const childTable = new  SymbolTable()
         symbolTable.addChild(childTable)
 
         const childChildTable = new SymbolTable()
@@ -34,7 +34,7 @@ describe("SymbolTable", ()=>{
     
     const symbolTable = new SymbolTable()
 
-    symbolTable.createSymbolByLexeme(new Token(TokenType.INTEGER, "100"))
+    symbolTable.createSymbolByLexeme(new Token(TokenType.INTEGER, "100")); // 存到静态区去了
     const symbolA = symbolTable.createSymbolByLexeme(new Token(TokenType.VARIABLE, "a"))
     const symbolB = symbolTable.createSymbolByLexeme(new Token(TokenType.VARIABLE, "b"))
 
