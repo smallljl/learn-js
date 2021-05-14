@@ -1,0 +1,44 @@
+<script>
+  class Observer{
+    constructor(data){
+      this.observer(data);
+    }
+
+    observer(obj){
+      if(obj && typeof obj === "object"){
+        // 遍历取出传入对象的所有属性,给遍历到的属性都增加get/set方法
+        for(let key in obj){
+          this.defineRecative(obj,key,obj[key]);
+        }
+      }
+    }
+    // obj 
+    // attr 需要新增get/set方法的属性
+    // value 需要新增get/set方法属性的取值
+    defineRecative(obj,attr,value){
+      this.observer(value);
+      Object.defineProperty(obj, attr, {
+        get(){
+          return value;
+        },
+        set:(newValue)=>{
+          this.observer(newValue);
+          if(value !== newValue){
+            value = newValue;
+          }
+        }
+      })
+    }
+  }
+
+  let obj = {
+    name:{
+      a:"abc"
+    },
+    age:33
+  }
+  new Observer(obj);
+  obj.name = "it666";
+  obj.age = 666;
+  console.log(obj);
+</script>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <div id="app">
+    <input type="text" v-model="name">
+    <input type="text" v-model="age">
+    <input type="text" v-model="time.h">
+    <p v-html="html"></p>
+    <p v-text="text"></p>
+    {{name}}
+    {{age}}
+  </div>
+  <script src="./nue.js"></script>
+  <script>
+    let vue = new Nue({
+      el:"#app",
+      data: {
+          name:"a1111",
+          age:"1",
+          time: {
+            h:1
+          },
+          html:`<div>我是div</div>`,
+          text:"hello world",
+          name:"aaa",
+          age:"18"
+        }
+      });
+  </script>
+</body>
+</html>
