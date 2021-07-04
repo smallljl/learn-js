@@ -1,16 +1,30 @@
 let CompilerUtil = {
   getValue(vm,value){
-    return value.split(".").reduce((data,currentKey)=>{
-      // data = $data; 
-      return data[currentKey.trim()];
-    },vm.$data)
+     // time.h --> [time, h]
+     return value.split('.').reduce((data, currentKey) => {
+        // 第一次执行: data=$data, currentKey=time
+        // 第二次执行: data=time, currentKey=h
+        return data[currentKey.trim()];
+     }, vm.$data);
   },
   getContent(vm,value){
+    // console.log(value); //  {{name}}-{{age}} -> 李南江-{{age}}  -> 李南江-33
     let reg = /\{\{(.+?)\}\}/gi;
-    let val = value.replace(reg, (...args)=>{
-      return this.getValue(vm,args[1]);
+    let val = value.replace(reg, (...args) => {
+        // 第一次执行 args[1] = name
+        // 第二次执行 args[1] = age
+        // console.log(args);
+        return this.getValue(vm, args[1]); // 李南江, 33
     });
     return val;
+  },
+  setValue(vm, attr, newValue){
+    attr.split(".").reduce((data,currentAttr,index,arr)=>{
+      if(index == arr.length - 1){
+        data[currentAttr] = newValue;
+      }
+      return data[currentAttr];
+    },vm.$data);
   },
   model:function(node,value,vm){  // value
     // node.value = vm.$data[value];
@@ -20,18 +34,46 @@ let CompilerUtil = {
     });
     let val = this.getValue(vm,value);
     node.value = val;
+
+    // 绑定input - v-model
+    node.addEventListener("input", (e) => {
+      let newValue = e.target.value;
+      this.setValue(vm,value,newValue);
+    })
+    
   },
   html:function(node,value,vm){
+    new Watcher(vm, value, (newValue, oldValue)=>{
+      node.innerHTML = newValue;
+      // debugger;
+    });
     let val = this.getValue(vm,value);
     node.innerHTML = val;
   },
   text:function(node,value,vm){
+    new Watcher(vm, value, (newValue, oldValue)=>{
+      node.innerText = newValue;
+      // debugger;
+    });
     let val = this.getValue(vm,value);
     node.innerText = val;
   },
   content:function(node,value,vm){
-    let val = this.getContent(vm, value);
+    let reg = /\{\{(.+?)\}\}/gi;
+    // 外层是为了拿到属性名称
+    let val = value.replace(reg, (...args)=>{
+        // 内层是为了保证数据完整性
+        new Watcher(vm, args[1], (newValue, oldValue)=>{
+            node.textContent = this.getContent(vm, value);
+        });
+        return this.getValue(vm, args[1]);
+    });
     node.textContent = val;
+  },
+  on:function(node,value,vm,type){
+    node.addEventListener(type,(e)=>{
+      vm.$methods[value].call(vm,e);
+    })
   }
 }
 
@@ -45,10 +87,33 @@ class Nue {
     }
 
     this.$data = options.data;
+    this.$methods = options.methods;
+    this.$computed = options.computed;
+    this.proxyData(); // 代理data的数据
+    this.computed2data();
     if(this.$el){
       // 给外界传入的所有数据都添加get/set方法
       new Observer(this.$data);
       new Compier(this);
+    }
+  }
+  computed2data(){
+    for(let key in this.$computed){
+      Object.defineProperty(this.$data, key, {
+        get:()=>{
+          return this.$computed[key].call(this);
+        }
+      })
+    }
+  }
+  // 实现数据的代理 this.name ===> this.data.name
+  proxyData(){
+    for(let key in this.$data){
+      Object.defineProperty(this,key,{
+        get:()=>{
+          return this.$data[key];
+        }
+      })
     }
   }
   // 判断是否是一个元素
@@ -97,8 +162,10 @@ class Compier {
       let {name,value} = attr;
       // 以v 开头的指令
       if(name.startsWith("v-")){
-        let [_,directive] = name.split("-");
-        CompilerUtil[directive](node,value,this.vm);
+        // name v-on:click  value = myFn
+        let [directiveName, directiveType] = name.split(":");
+        let [_,directive] = directiveName.split("-");
+        CompilerUtil[directive](node,value,this.vm,directiveType);
       }
     });
   }
