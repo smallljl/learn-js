@@ -5,8 +5,11 @@
 </template>
 
 <script>
-
 export default {
-  name: 'Home'
+  name: 'Home',
+  mounted() {
+    console.log('Home', this.$router);
+    console.log('Home', this.$route);
+  }
 }
 </script>
