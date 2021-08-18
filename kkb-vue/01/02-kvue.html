@@ -1,0 +1,110 @@
+<div id="app">
+  <h3>{{title1}}</h3>
+  <h3>{{title2}}</h3>
+</div>
+
+<script>
+  const Vue = {
+    createRenderer({ querySelector, insert }) {
+      return {
+        createApp(options) {
+          // 返回App实例
+          return {
+            mount(selector) {
+              // 挂载做什么？
+              // 要把选项中数据状态转换为dom追加到宿主元素上
+              // 渲染到dom
+              // 1.获取宿主
+              const parent = querySelector(selector)
+
+              // 2.渲染
+              // 编译：模板template =》 render
+              // 2.5处理其他options，兼容vue2
+              if (options.setup) {
+                this.setupState = options.setup()
+              }
+              if (options.data) {
+                this.data = options.data()
+              }
+              // ...
+              this.proxy = new Proxy(this, {
+                get(target, key) {
+                  if (key in target.setupState) {
+                    return target.setupState[key]
+                  } else {
+                    return target.data[key]
+                  }
+                }
+              })
+
+              if (!options.render) {
+                options.render = this.compile(parent.innerHTML)
+              }
+              const el = options.render.call(this.proxy)
+
+
+
+              // 3.追加
+              parent.innerHTML = ''
+              // parent.appendChild(el)
+              insert(el, parent)
+
+            },
+            compile(template) {
+              // template => ast => render
+              return function render() {
+                // 描述视图
+                const h3 = document.createElement('h3')
+                h3.textContent = this.title1
+                return h3
+
+                // return h('div')
+              }
+            }
+          }
+        }
+      }
+    },
+
+    // 给Web平台编写createApp
+    createApp(options) {
+      const renderer = this.createRenderer({
+        querySelector(sel){
+          return document.querySelector(sel)
+        },
+        insert(el, parent, anchor) {
+          parent.insertBefore(el, anchor || null)
+        }
+      })
+      // 返回App实例
+      return renderer.createApp(options)
+      
+    }
+  }
+</script>
+<script>
+  // vue2: new Vue({})
+  // vue3: createApp()
+  const app = Vue.createApp({
+    data() {
+      return {
+        title1: 'hello, vue3!'
+      }
+    },
+    setup() {
+      // const state = Vue.reactive({
+      //   title2: 'vue3, hello!'
+      // })
+      return {
+        title2: 'vue3, hello!'
+      }
+    },
+    // render() {
+    //   return Vue.h('div', {title: 'abc'})
+    // }
+  })
+  // app.use(store).use(router)
+  // app.component('comp', {})
+
+  app.mount('#app')
+</script>
