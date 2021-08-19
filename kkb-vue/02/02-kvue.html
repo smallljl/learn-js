@@ -1,0 +1,192 @@
+<div id="app">
+  <h3>{{title1}}</h3>
+  <h3>{{title2}}</h3>
+</div>
+
+<script>
+  // 响应式：将传入reactive对象座一层代理
+  // 将传入对象包装为Proxy
+  function reactive(obj) {
+    return new Proxy(obj, {
+      get(target, key) {
+        // 依赖收集
+        track(target, key)
+        return target[key]
+      },
+      set(target, key, val) {
+        target[key] = val
+        // 通知更新
+        trigger(target, key)
+        // app.update()
+      }
+    })
+  }
+
+  // 临时变量
+  const effectStack = []
+
+  // 建立依赖关系
+  function effect(fn) {
+    const eff = function() {
+      try {
+        effectStack.push(fn)
+        fn()
+      } finally {
+        effectStack.pop()
+      }
+    }
+
+    eff()
+
+    return eff
+  }
+
+  // 将映射关系保存map中
+  const targetMap = {state:{title:[]}}
+  
+  // 建立映射关系
+  // 建立target，key和effect之间的映射关系
+  function track(target, key) {
+    const effect = effectStack[effectStack.length - 1]
+    if(effect) {
+      let map = targetMap[target]
+      if (!map) {
+        map = targetMap[target] = {}
+      }
+
+      let deps = map[key]
+      if (!deps) {
+        deps = map[key] = []
+      }
+
+      deps.push(effect)
+    }
+  }
+
+  function trigger(target, key) {
+    const map = targetMap[target]
+
+    if (map) {
+      const deps = map[key]
+      if(deps) {
+        deps.forEach(eff => eff())
+      }
+    }
+  }
+
+  const Vue = {
+    createRenderer({ querySelector, insert }) {
+      return {
+        createApp(options) {
+          // 返回App实例
+          return {
+            mount(selector) {
+              // 挂载做什么？
+              // 要把选项中数据状态转换为dom追加到宿主元素上
+              // 渲染到dom
+              // 1.获取宿主
+              const parent = querySelector(selector)
+
+              // 2.渲染
+              // 编译：模板template =》 render
+              // 2.5处理其他options，兼容vue2
+              if (options.setup) {
+                this.setupState = options.setup()
+              }
+              if (options.data) {
+                this.data = options.data()
+              }
+              // ...
+              this.proxy = new Proxy(this, {
+                get(target, key) {
+                  if (key in target.setupState) {
+                    return target.setupState[key]
+                  } else {
+                    return target.data[key]
+                  }
+                },
+                set(target, key, val) {
+                  if (key in target.setupState) {
+                    target.setupState[key] = val
+                  } else {
+                    target.data[key] = val
+                  }
+                  // update()
+                }
+              })
+
+              if (!options.render) {
+                options.render = this.compile(parent.innerHTML)
+              }
+
+              // 给应用一个更新函数
+              // 希望update函数是一个副作用函数
+
+              this.update = effect(() => {
+                const el = options.render.call(this.proxy)
+                // 3.追加
+                parent.innerHTML = ''
+                // parent.appendChild(el)
+                insert(el, parent)
+              })
+              // 初始化时执行一次
+              // this.update()
+            },
+            compile(template) {
+              // template => ast => render
+              return function render() {
+                // 描述视图
+                const h3 = document.createElement('h3');
+                h3.textContent = this.title2;
+                return h3;
+                // return h('div')
+              }
+            }
+          }
+        }
+      }
+    },
+
+    // 给Web平台编写createApp
+    createApp(options) {
+      const renderer = this.createRenderer({
+        querySelector(sel) {
+          return document.querySelector(sel)
+        },
+        insert(el, parent, anchor) {
+          parent.insertBefore(el, anchor || null)
+        }
+      })
+      // 返回App实例
+      return renderer.createApp(options)
+
+    }
+  }
+</script>
+<script>
+  // vue2: new Vue({})
+  // vue3: createApp()
+  const app = Vue.createApp({
+    data() {
+      return {
+        title1: 'hello, vue3!'
+      }
+    },
+    setup() {
+      const state = reactive({
+        title2: 'vue3, hello!'
+      })
+      setTimeout(() => {
+        state.title2 = 'updated!!!!'
+      }, 2000);
+      return state
+    },
+    // render() {
+    //   return Vue.h('div', {title: 'abc'})
+    // }
+  })
+  // app.use(store).use(router)
+  // app.component('comp', {})
+
+  app.mount('#app')
+</script>
